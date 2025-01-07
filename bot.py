@@ -1,5 +1,6 @@
 import os
 import asyncio
+import json
 from dotenv import load_dotenv
 from discord import Intents, Embed, Interaction
 from discord.ext import commands, tasks
@@ -52,6 +53,23 @@ team_emojis = {
     "Wizards": "<:wizards:1326238764464476250>",  
 }
 
+SAVED_CHANNELS = "channels.json"
+#Updating channel dict with channels.json data
+def load_update_channels():
+    global update_channels
+    try:
+        with open(SAVED_CHANNELS, "r") as file:
+            update_channels = json.load(file)
+    except FileNotFoundError:
+        update_channels = {}
+    except json.JSONDecodeError:
+        print("Error: channels.json is corrupted. Starting with empty update channels.")
+        update_channels = {}
+
+def save_update_channels():
+    with open(SAVED_CHANNELS, "w") as file:
+        json.dump(update_channels, file, indent=4)
+
 def get_live_games():
     scoreboard_data = scoreboard.ScoreBoard()
     games = scoreboard_data.games.get_dict()  
@@ -92,13 +110,11 @@ async def on_ready():
     await bot.tree.sync()  #Register all commands globally
 
     #Start the periodic game check task when the bot is ready
+    load_update_channels()
     check_games.start()
 
 @bot.tree.command(name="live", description="Get live NBA games")
 async def live(interaction: Interaction):
-    """
-    Slash command to fetch live NBA games.
-    """
     ongoing_games = get_live_games()
     if not ongoing_games:
         await interaction.response.send_message("No games are live right now", ephemeral=True)
@@ -142,11 +158,38 @@ async def live(interaction: Interaction):
         except asyncio.TimeoutError:
             break
 
-@bot.tree.command(name="setupdatechannel", description="Set the channel for automatic game start/end updates.")
+@bot.tree.command(name="set-update-channel", description="Set the channel for automatic game start/end updates.")
 async def set_update_channel(interaction: Interaction, channel_id: str):
+    guild = interaction.guild
+    if any(char.isalpha() for char in channel_id):
+        await interaction.response.send_message(
+            "The provided channel ID does not exist in this server. Please check and try again.",
+            ephemeral=True
+        )
+        return
+    
+    channel = guild.get_channel(int(channel_id))
+
+    if channel is None:
+        #Return an error if the channel does not exist or is not in the guild
+        await interaction.response.send_message(
+            "The provided channel ID does not exist in this server. Please check and try again.",
+            ephemeral=True
+        )
+        return
+
     guild_id = str(interaction.guild.id)
     update_channels[guild_id] = int(channel_id)
-    await interaction.response.send_message(f"Update channel set to <#{channel_id}>", ephemeral=True)
+    save_update_channels()  # Save changes to the file
+    await interaction.response.send_message(
+        f"Update channel successfully set to <#{channel_id}>.",
+        ephemeral=True
+    )
+
+@bot.tree.command(name="view-update-channel", description="View the current channel for automatic game start/end updates.")
+async def view_update_channel(interaction: Interaction):
+    guild_id = str(interaction.guild.id)
+    await interaction.response.send_message(f"Update channel is currently set to <#{update_channels[guild_id]}>", ephemeral=True)
 
 @tasks.loop(minutes=1)
 async def check_games():

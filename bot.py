@@ -11,44 +11,45 @@ TOKEN = os.getenv('BOT_TOKEN')
 
 #Intents and bot setup
 intents = Intents.default()
-intents.message_content = True  # Enable message content intent
+intents.message_content = True  
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 tracked_games = {}  
 update_channels = {}  
-#Team emojis with proper emoji format
+
+#Team emojis 
 team_emojis = {
-    "Hawks": "🦅",  
-    "Celtics": "☘️",  
-    "Nets": "🏀",  
-    "Hornets": "🐝",  
-    "Bulls": "🐂",  
-    "Cavaliers": "🦸",  
-    "Mavericks": "🤠", 
-    "Nuggets": "⛏️",  
+    "Hawks": "<:hawks:1326239058157895731>",  
+    "Celtics": "<:celtics:1326239095047061524>",  
+    "Nets": "<:nets:1326238935214719026>",  
+    "Hornets": "<:hornets:1326239015271268402>",  
+    "Bulls": "<:bulls:1326239097580163173>",  
+    "Cavaliers": "<:cavaliers:1326239096326062080>",  
+    "Mavericks": "<:mavericks:1326238936087138334>", 
+    "Nuggets": "<:nuggets:1326238898011111598>",  
     "Pistons": "<:pistons:1325999283543081050>",  
-    "Warriors": "⚔️",  
-    "Rockets": "🚀",  
-    "Pacers": "🏁",  
-    "Clippers": "✂️",  
-    "Lakers": "🦄", 
-    "Grizzlies": "🐻", 
-    "Heat": "🔥", 
-    "Bucks": "🦌",  
-    "Timberwolves": "🐺",  
-    "Pelicans": "🦩",  
-    "Knicks": "🗽", 
-    "Thunder": "⚡", 
-    "Magic": "✨",  
-    "76ers": "🔴",  
-    "Suns": "🌞", 
+    "Warriors": "<:warriors:1326238764946686045>",  
+    "Rockets": "<:rockets:1326238857976352778>",  
+    "Pacers": "<:pacers:1326238897046425661>",  
+    "Clippers": "<:clippers:1326239060183748678>",  
+    "Lakers": "<:lakers:1326238975219863622>", 
+    "Grizzlies": "<:grizzlies:1326239059185635393>", 
+    "Heat": "<:heat:1326239016642809866>", 
+    "Bucks": "<:bucks:1326239122938920970>",  
+    "Timberwolves": "<:timberwolves:1326238801286266922>",  
+    "Pelicans": "<:pelicans:1326238895662305373>",  
+    "Knicks": "<:knicks:1326238976251789456>", 
+    "Thunder": "<:thunder:1326238802192240711>", 
+    "Magic": "<:magic:1326238937299157042>",  
+    "76ers": "<:76ers:1326239123643826277>",  
+    "Suns": "<:suns:1326238803215781959>", 
     "Trail Blazers": "<:trailblazers:1325998001893933117>",  
-    "Kings": "👑",  
-    "Spurs": "⚽",  
-    "Raptors": "🦖",  
-    "Jazz": "🎷",  
-    "Wizards": "🧙‍♂️",  
+    "Kings": "<:kings:1326238977673531462>",  
+    "Spurs": "<:spurs:1326238856944550021>",  
+    "Raptors": "<:raptors:1326238859133976596>",  
+    "Jazz": "<:jazz:1326239013719244831>",  
+    "Wizards": "<:wizards:1326238764464476250>",  
 }
 
 def get_live_games():

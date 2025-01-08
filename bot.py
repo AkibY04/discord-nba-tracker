@@ -18,6 +18,7 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
+#Sync command made by AbstractUmbra | umbra@abstractumbra.dev
 @bot.command()
 @commands.guild_only()
 @commands.is_owner()

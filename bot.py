@@ -1,11 +1,12 @@
 import os
 import asyncio
 import json
+import discord
 from dotenv import load_dotenv
 from discord import Intents, Embed, Interaction
 from discord.ext import commands, tasks
 from nba_api.live.nba.endpoints import scoreboard
-
+from typing import Literal, Optional
 
 #Load bot token
 load_dotenv()
@@ -16,11 +17,6 @@ intents = Intents.default()
 intents.message_content = True  
 
 bot = commands.Bot(command_prefix="!", intents=intents)
-
-from typing import Literal, Optional
-
-import discord
-from discord.ext import commands
 
 @bot.command()
 @commands.guild_only()
@@ -155,7 +151,7 @@ def create_embed(game, index, total):
     away_team_name = f"{away_team_emoji} {game['away_team']}"
 
     embed = Embed(
-        title="🏀 Live NBA Game 🏀",
+        title="NBA Games",
         description=f"{home_team_name} ({game['home_score']}) vs. {away_team_name} ({game['away_score']})",
         color=0x1D428A
     )
